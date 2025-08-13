@@ -71,7 +71,7 @@ fun StoryPlayer(
     val touchSlopPx = with(LocalDensity.current) { 8.dp.toPx() }
 
     // Navigation
-    fun navigatePrevious() {
+    fun navigatePrevious() { //önceki story
         coroutineScope.launch {
             when {
                 currentStoryIndex > 0 -> currentStoryIndex--
@@ -83,7 +83,7 @@ fun StoryPlayer(
         }
     }
 
-    fun navigateNext() {
+    fun navigateNext() { //sonraki story
         coroutineScope.launch {
             when {
                 currentStoryIndex < currentStoryGroup.stories.size - 1 -> currentStoryIndex++
@@ -95,7 +95,7 @@ fun StoryPlayer(
             }
         }
     }
-
+//story durdur devam et
     fun pauseStory() {
         progressPaused = true
         isProgressBarVisible = false
@@ -170,7 +170,7 @@ fun StoryPlayer(
                             val dyFromStart = py - startY
                             val dx = px - lastX
 
-                            // Check if movement exceeds touch slop
+                            // Check movement
                             if (!pastSlop && (abs(dxFromStart) > touchSlopPx || abs(dyFromStart) > touchSlopPx)) {
                                 pastSlop = true
                                 isDragging = abs(dxFromStart) > abs(dyFromStart)
@@ -178,7 +178,7 @@ fun StoryPlayer(
                                 if (isDragging) pauseStory()
                             }
 
-                            // Handle horizontal dragging
+                            // dikey kaydırma
                             if (isDragging) {
                                 change.consume()
                                 val maxOffset = size.width * 0.6f
@@ -190,7 +190,7 @@ fun StoryPlayer(
 
                             lastX = px
 
-                            // Handle touch release
+                            // basılı tut bırak
                             if (!change.pressed) {
                                 longPressJob.cancel()
 
@@ -212,7 +212,7 @@ fun StoryPlayer(
                 }
             }
     ) {
-        // Story Content
+        // Story
         when (currentStory) {
             is StoryContent.Image -> {
                 Image(
@@ -246,7 +246,7 @@ fun StoryPlayer(
             }
         }
 
-        // UI Overlay
+
         AnimatedVisibility(
             visible = isProgressBarVisible,
             enter = fadeIn(),
