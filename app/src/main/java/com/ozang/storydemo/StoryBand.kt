@@ -70,7 +70,7 @@ fun StoryPlayer(
 
     val touchSlopPx = with(LocalDensity.current) { 8.dp.toPx() }
 
-    // Navigation functions
+    // Navigation
     fun navigatePrevious() {
         coroutineScope.launch {
             when {
@@ -125,6 +125,33 @@ fun StoryPlayer(
                         var totalDragY = 0f
                         var longPressTriggered = false
 
+                        // gesture handgling
+                        fun handleSwipeGesture(): Unit {
+                            val threshold = size.width * 0.3f
+                            val final = slideOffset.value
+                            coroutineScope.launch {
+                                when {
+                                    final > threshold -> {
+                                        slideOffset.animateTo(size.width.toFloat(), animationSpec = spring())
+                                        navigatePrevious()
+                                        slideOffset.snapTo(-size.width.toFloat())
+                                        slideOffset.animateTo(0f, animationSpec = spring())
+                                    }
+                                    final < -threshold -> {
+                                        slideOffset.animateTo(-size.width.toFloat(), animationSpec = spring())
+                                        navigateNext()
+                                        slideOffset.snapTo(size.width.toFloat())
+                                        slideOffset.animateTo(0f, animationSpec = spring())
+                                    }
+                                    else -> slideOffset.animateTo(0f, animationSpec = spring())
+                                }
+                            }
+                        }
+
+                        fun handleTapGesture(tapX: Float): Unit {
+                            if (tapX < size.width / 2) navigatePrevious() else navigateNext()
+                        }
+
                         val longPressJob = coroutineScope.launch {
                             kotlinx.coroutines.delay(250)
                             if (!pastSlop && !isDragging) {
@@ -167,11 +194,14 @@ fun StoryPlayer(
                             if (!change.pressed) {
                                 longPressJob.cancel()
 
-                                when {
-                                    isDragging -> handleSwipeGesture(slideOffset, androidx.compose.ui.geometry.Size(size.width.toFloat(), size.height.toFloat()), coroutineScope, ::navigatePrevious, ::navigateNext)
-                                    longPressTriggered -> resumeStory()
-                                    totalDragY > size.height * 0.25f -> onClose()
-                                    else -> handleTapGesture(px, size.width.toFloat(), ::navigatePrevious, ::navigateNext)
+                                if (isDragging) {
+                                    handleSwipeGesture()
+                                } else if (longPressTriggered) {
+                                    resumeStory()
+                                } else if (totalDragY > size.height * 0.25f) {
+                                    onClose()
+                                } else {
+                                    handleTapGesture(px)
                                 }
 
                                 if (!longPressTriggered && progressPaused) resumeStory()
@@ -351,7 +381,7 @@ private fun LinearBar(
                 try {
                     progressAnim.animateTo(1f, animationSpec = tween(remaining))
                     if (progressAnim.value >= 1f) onAnimationEnd()
-                } catch (_: Exception) { /* Animation cancelled */ }
+                } catch (_: Exception) { }
             }
         }
     }
@@ -374,43 +404,4 @@ private fun LinearBar(
                 .background(Color.White)
         )
     }
-}
-
-// Helper functions for gesture handling
-private fun handleSwipeGesture(
-    slideOffset: Animatable<Float, *>,
-    size: androidx.compose.ui.geometry.Size,
-    coroutineScope: kotlinx.coroutines.CoroutineScope,
-    onSwipeRight: () -> Unit,
-    onSwipeLeft: () -> Unit
-) {
-    val threshold = size.width * 0.3f
-    val final = slideOffset.value
-
-    coroutineScope.launch {
-        when {
-            final > threshold -> {
-                slideOffset.animateTo(size.width, animationSpec = spring())
-                onSwipeRight()
-                slideOffset.snapTo(-size.width)
-                slideOffset.animateTo(0f, animationSpec = spring())
-            }
-            final < -threshold -> {
-                slideOffset.animateTo(-size.width, animationSpec = spring())
-                onSwipeLeft()
-                slideOffset.snapTo(size.width)
-                slideOffset.animateTo(0f, animationSpec = spring())
-            }
-            else -> slideOffset.animateTo(0f, animationSpec = spring())
-        }
-    }
-}
-
-private fun handleTapGesture(
-    tapX: Float,
-    screenWidth: Float,
-    onLeftTap: () -> Unit,
-    onRightTap: () -> Unit
-) {
-    if (tapX < screenWidth / 2) onLeftTap() else onRightTap()
 }
