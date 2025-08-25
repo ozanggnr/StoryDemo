@@ -42,6 +42,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
     implementation("com.google.firebase:firebase-analytics")
@@ -57,6 +58,8 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.androidx.animation.core)
     implementation(libs.androidx.runtime)
+    implementation(libs.androidx.foundation)
+    implementation(libs.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

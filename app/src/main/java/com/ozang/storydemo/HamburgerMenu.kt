@@ -2,6 +2,7 @@ package com.ozang.storydemo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,13 +25,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HamburgerMenu(userName: String,userSurname:String) {
+fun HamburgerMenu(
+    userName: String,
+    userSurname: String,
+    onSettingsClick: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .width(width = 250.dp)
+            .width(width = 300.dp)
             .background(Color.White)
-            .padding(top = 80.dp, start = 20.dp, bottom = 120.dp)
+            .padding(top = 80.dp, start = 35.dp, bottom = 120.dp)
 
     ) {
         // Logo
@@ -59,10 +64,15 @@ fun HamburgerMenu(userName: String,userSurname:String) {
             color = Color(0xFF1A997B)
         )
 
-        Spacer(modifier = Modifier.weight(1f)) // aşağı ittir
+        Spacer(modifier = Modifier.weight(1f)) // spacer
 
         // Settings butonu
-        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable { onSettingsClick() }
+                .padding(vertical = 8.dp)
+        ) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
