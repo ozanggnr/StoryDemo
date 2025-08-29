@@ -1,5 +1,7 @@
 package com.ozang.storydemo
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,20 +11,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBackClick: () -> Unit) {
-    // Settings data
+fun SettingsScreen(
+    onBackClick: () -> Unit,
+    onAboutClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    var showRateDialog by remember { mutableStateOf(false) }
+
     val accountSettings = listOf("Kategori")
     val suggestions = listOf("Arkadaşını davet et", "Değerlendir", "Burayı nasıl buldun?")
     val wellbeesSettings = listOf(
@@ -49,25 +58,30 @@ fun SettingsScreen(onBackClick: () -> Unit) {
             colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
         )
 
-        // Scrollable
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-
-            SettingsGroup("HESAP AYARLARI", accountSettings)
+            SettingsGroup("HESAP AYARLARI", accountSettings) { }
             Spacer(modifier = Modifier.height(24.dp))
 
-
-            SettingsGroup("ÖNERİLER", suggestions)
+            SettingsGroup("ÖNERİLER", suggestions) { item ->
+                if (item == "Değerlendir") {
+                    showRateDialog = true
+                }
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
-            SettingsGroup("WELLBEES AYARLARI", wellbeesSettings)
+            SettingsGroup("WELLBEES AYARLARI", wellbeesSettings) { item ->
+                if (item == "Wellbees Hakkında") {
+                    onAboutClick()
+                }
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Version (static)
+            // Version
             Text(
                 "V6.1.6",
                 fontSize = 14.sp,
@@ -82,7 +96,9 @@ fun SettingsScreen(onBackClick: () -> Unit) {
             Spacer(modifier = Modifier.height(22.dp))
             Button(
                 onClick = { /* Handle exit */ },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53E3E)),
                 shape = RoundedCornerShape(28.dp)
             ) {
@@ -92,10 +108,64 @@ fun SettingsScreen(onBackClick: () -> Unit) {
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
+
+    // AlertDialog with square corners and yellow buttons
+    if (showRateDialog) {
+        AlertDialog(
+            onDismissRequest = { showRateDialog = false },
+            title = {
+                Text(
+                    "Mağazada bizi değerlendirmek ve yorum bırakmak ister misiniz?",
+                    fontSize = 16.sp,
+                    color = Color.Black
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showRateDialog = false
+                        val intent = Intent(Intent.ACTION_VIEW,
+                            "https://play.google.com/store/apps/details?id=com.wellbees.android&hl=en".toUri())
+                        try {
+                            context.startActivity(intent)
+                        } catch (_: ActivityNotFoundException) {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://play.google.com/store/apps/details?id=com.wellbees.android&hl=en".toUri()
+                                )
+                            )
+                        }
+                    }
+                ) {
+                    Text(
+                        "İZİN VER",
+                        color = Color(0xFFffc42c),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRateDialog = false }) {
+                    Text(
+                        "REDDET",
+                        color = Color(0xFFffc42c),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            },
+            shape = RoundedCornerShape(0.dp), // Square corners
+            containerColor = Color.White
+        )
+    }
 }
 
 @Composable
-fun SettingsGroup(title: String, items: List<String>) {
+fun SettingsGroup(
+    title: String,
+    items: List<String>,
+    onItemClick: (String) -> Unit = {}
+) {
     Text(
         title,
         fontSize = 18.sp,
@@ -106,16 +176,16 @@ fun SettingsGroup(title: String, items: List<String>) {
     Spacer(modifier = Modifier.height(8.dp))
 
     items.forEach { item ->
-        SettingsItem(item)
+        SettingsItem(item) { onItemClick(item) }
     }
 }
 
 @Composable
-fun SettingsItem(title: String) {
+fun SettingsItem(title: String, onClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle click */ }
+            .clickable { onClick() }
             .padding(vertical = 16.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

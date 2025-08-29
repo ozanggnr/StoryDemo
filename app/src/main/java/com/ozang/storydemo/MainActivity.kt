@@ -115,6 +115,7 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     var selectedStoryGroup by remember { mutableStateOf<StoryGroup?>(null) }
     var selectedStoryIndex by remember { mutableIntStateOf(0) }
     var showSettings by remember { mutableStateOf(false) }
+    var showAbout by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -129,9 +130,17 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     }
 
     when {
+        showAbout -> {
+            AboutScreen(
+                onBackClick = { showAbout = false }
+            )
+        }
         showSettings -> {
             SettingsScreen(
-                onBackClick = { showSettings = false }
+                onBackClick = { showSettings = false },
+                onAboutClick = {
+                    showAbout = true
+                }
             )
         }
         else -> {
