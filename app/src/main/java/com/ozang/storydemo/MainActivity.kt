@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
         )),
         StoryGroup("2", "Bob", R.drawable.photo2, listOf(
             StoryContent.Image(R.drawable.photo3),
-            StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
+            StoryContent.Video("https:  commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
         )),
         StoryGroup("3", "Ozan", R.drawable.ic_launcher_foreground, listOf(
             StoryContent.Image(R.drawable.photo1),
@@ -116,6 +116,8 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     var selectedStoryIndex by remember { mutableIntStateOf(0) }
     var showSettings by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
+    var showTerms by remember { mutableStateOf(false) }
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -135,11 +137,19 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                 onBackClick = { showAbout = false }
             )
         }
+        showTerms -> {
+            TermsOfServiceScreen(
+                onBackClick = { showTerms = false }
+            )
+        }
         showSettings -> {
             SettingsScreen(
                 onBackClick = { showSettings = false },
                 onAboutClick = {
                     showAbout = true
+                },
+                onTermsClick = {
+                    showTerms= true
                 }
             )
         }
