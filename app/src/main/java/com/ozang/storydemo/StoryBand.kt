@@ -22,9 +22,7 @@ import kotlin.math.abs
 
 @Composable
 fun StoryPlayer(
-    storyGroups: List<StoryGroup>,
-    initialGroupIndex: Int,
-    onClose: () -> Unit
+    storyGroups: List<StoryGroup>, initialGroupIndex: Int, onClose: () -> Unit
 ) {
     var currentGroupIndex by remember { mutableIntStateOf(initialGroupIndex) }
     var currentStoryIndex by remember { mutableIntStateOf(0) }
@@ -83,6 +81,7 @@ fun StoryPlayer(
                     currentGroupIndex++
                     currentStoryIndex = 0
                 }
+
                 else -> onClose()
             }
         }
@@ -108,39 +107,37 @@ fun StoryPlayer(
             .pointerInput(currentGroupIndex, currentStoryIndex) {
                 var totalDragX = 0f
                 var totalDragY = 0f
-                detectDragGestures(
-                    onDragStart = {
-                        totalDragX = 0f
-                        totalDragY = 0f
-                        pauseStory()
-                    },
-                    onDragEnd = {
-                        scope.launch {
-                            val widthF = size.width.toFloat()
-                            val thresholdX = size.width * 0.3f
-                            when {
-                                // Right swipe -> previous group
-                                slideOffset.value > thresholdX && canSwipePrevGroup -> {
-                                    slideOffset.animateTo(widthF)
-                                    currentGroupIndex--
-                                    currentStoryIndex = storyGroups[currentGroupIndex].stories.size - 1
-                                    slideOffset.snapTo(-widthF)
-                                    slideOffset.animateTo(0f)
-                                }
-                                // Left swipe -> next group
-                                slideOffset.value < -thresholdX && canSwipeNextGroup -> {
-                                    slideOffset.animateTo(-widthF)
-                                    currentGroupIndex++
-                                    currentStoryIndex = 0
-                                    slideOffset.snapTo(widthF)
-                                    slideOffset.animateTo(0f)
-                                }
-                                else -> slideOffset.animateTo(0f)
+                detectDragGestures(onDragStart = {
+                    totalDragX = 0f
+                    totalDragY = 0f
+                    pauseStory()
+                }, onDragEnd = {
+                    scope.launch {
+                        val widthF = size.width.toFloat()
+                        val thresholdX = size.width * 0.3f
+                        when {
+                            // Right swipe -> previous group
+                            slideOffset.value > thresholdX && canSwipePrevGroup -> {
+                                slideOffset.animateTo(widthF)
+                                currentGroupIndex--
+                                currentStoryIndex = storyGroups[currentGroupIndex].stories.size - 1
+                                slideOffset.snapTo(-widthF)
+                                slideOffset.animateTo(0f)
                             }
-                            resumeStory()
+                            // Left swipe -> next group
+                            slideOffset.value < -thresholdX && canSwipeNextGroup -> {
+                                slideOffset.animateTo(-widthF)
+                                currentGroupIndex++
+                                currentStoryIndex = 0
+                                slideOffset.snapTo(widthF)
+                                slideOffset.animateTo(0f)
+                            }
+
+                            else -> slideOffset.animateTo(0f)
                         }
+                        resumeStory()
                     }
-                ) { _, dragAmount ->
+                }) { _, dragAmount ->
                     totalDragX += dragAmount.x
                     totalDragY += dragAmount.y
                     val isVerticalDominant = abs(totalDragY) > abs(totalDragX) * 1.2f
@@ -157,11 +154,17 @@ fun StoryPlayer(
 
                     val adjusted = when {
                         dragAmount.x > 0 && !canSwipePrevGroup -> {
-                            (slideOffset.value + dragAmount.x * 0.2f).coerceIn(0f, size.width * 0.15f)
+                            (slideOffset.value + dragAmount.x * 0.2f).coerceIn(
+                                0f, size.width * 0.15f
+                            )
                         }
+
                         dragAmount.x < 0 && !canSwipeNextGroup -> {
-                            (slideOffset.value + dragAmount.x * 0.2f).coerceIn(-size.width * 0.15f, 0f)
+                            (slideOffset.value + dragAmount.x * 0.2f).coerceIn(
+                                -size.width * 0.15f, 0f
+                            )
                         }
+
                         else -> rawOffset.coerceIn(minOffset, maxOffset)
                     }
 
@@ -169,31 +172,25 @@ fun StoryPlayer(
                 }
             }
             .pointerInput(currentStoryIndex, currentGroupIndex) {
-                detectTapGestures(
-                    onPress = {
-                        pauseStory()
-                        tryAwaitRelease()
-                        resumeStory()
-                    },
-                    onTap = { offset ->
-                        // Tap next , previous
-                        if (offset.x < size.width / 2) {
-                            navigatePrevious()
-                        } else {
-                            navigateNext()
-                        }
+                detectTapGestures(onPress = {
+                    pauseStory()
+                    tryAwaitRelease()
+                    resumeStory()
+                }, onTap = { offset ->
+                    // Tap next , previous
+                    if (offset.x < size.width / 2) {
+                        navigatePrevious()
+                    } else {
+                        navigateNext()
                     }
-                )
-            }
-    ) {
+                })
+            }) {
         // Story content
         StoryContentView(currentStory = currentStory, player = player)
 
         // Story overlay , progress bars
         AnimatedVisibility(
-            visible = isProgressBarVisible,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = isProgressBarVisible, enter = fadeIn(), exit = fadeOut()
         ) {
             key(currentGroupIndex, currentStoryIndex) {
                 StoryOverlay(

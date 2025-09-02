@@ -26,9 +26,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun HamburgerMenu(
-    userName: String,
-    userSurname: String,
-    onSettingsClick: () -> Unit = {}
+    userName: String, userSurname: String, onSettingsClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -51,17 +49,13 @@ fun HamburgerMenu(
 
         // Ad Soyad
         Text(
-            text = "$userName $userSurname",
-            fontSize = 20.sp,
-            color = Color.Black
+            text = "$userName $userSurname", fontSize = 20.sp, color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(4.dp))
         // See your profile text
         Text(
-            text = "See your profile",
-            fontSize = 14.sp,
-            color = Color(0xFF1A997B)
+            text = "See your profile", fontSize = 14.sp, color = Color(0xFF1A997B)
         )
 
         Spacer(modifier = Modifier.weight(1f)) // spacer
@@ -71,8 +65,7 @@ fun HamburgerMenu(
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
             modifier = Modifier
                 .clickable { onSettingsClick() }
-                .padding(vertical = 8.dp)
-        ) {
+                .padding(vertical = 8.dp)) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
@@ -80,9 +73,7 @@ fun HamburgerMenu(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Settings",
-                fontSize = 18.sp,
-                color = Color.Black
+                text = "Settings", fontSize = 18.sp, color = Color.Black
             )
         }
     }

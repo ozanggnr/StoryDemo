@@ -61,16 +61,15 @@ fun InviteFriendScreen(
 
             // Back button
             IconButton(
-                onClick = onBackClick,
-                modifier = Modifier
+                onClick = onBackClick, modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(16.dp)
+                    .padding(start = 8.dp, top = 50.dp)
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     "Back",
                     tint = Color.Black,
-                    modifier = Modifier.size(38.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         }
@@ -111,14 +110,12 @@ fun InviteFriendScreen(
             trailingIcon = {
                 Icon(
                     Icons.Default.AccountCircle, //icon değişecek
-                    contentDescription = "Copy email",
-                    tint = Color.Gray
+                    contentDescription = "Copy email", tint = Color.Gray
                 )
             },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF1A997B),
-                unfocusedBorderColor = Color.LightGray
+                focusedBorderColor = Color(0xFF1A997B), unfocusedBorderColor = Color.LightGray
             )
         )
 
@@ -137,10 +134,7 @@ fun InviteFriendScreen(
             shape = RoundedCornerShape(25.dp)
         ) {
             Text(
-                "Share",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+                "Share", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium
             )
         }
 

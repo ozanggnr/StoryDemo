@@ -28,19 +28,17 @@ fun TermsOfServiceScreen(
         // Top Bar
         CenterAlignedTopAppBar(
             title = {
-                Text(
-                    stringResource(R.string.terms_title),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.Black)
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+            Text(
+                stringResource(R.string.terms_title),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }, navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.Black)
+            }
+        }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
         )
 
         // Content

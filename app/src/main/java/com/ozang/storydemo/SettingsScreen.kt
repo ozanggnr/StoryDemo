@@ -25,9 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 
 data class Language(
-    val code: String,
-    val name: String,
-    val displayName: String
+    val code: String, val name: String, val displayName: String
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +34,8 @@ fun SettingsScreen(
     onBackClick: () -> Unit,
     onAboutClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
-    onInviteFriendClick: () -> Unit = {}
+    onInviteFriendClick: () -> Unit = {},
+    onHowDidYouFindClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var showRateDialog by remember { mutableStateOf(false) }
@@ -58,17 +57,28 @@ fun SettingsScreen(
     )
 
     // Selected languages
-    var selectedLanguage by remember { mutableStateOf(availableLanguages.find { it.code == "en" } ?: availableLanguages[0]) }
-    var selectedExpertLanguage by remember { mutableStateOf(availableLanguages.find { it.code == "en" } ?: availableLanguages[0]) }
+    var selectedLanguage by remember {
+        mutableStateOf(availableLanguages.find { it.code == "en" } ?: availableLanguages[0])
+    }
+    var selectedExpertLanguage by remember {
+        mutableStateOf(availableLanguages.find { it.code == "en" } ?: availableLanguages[0])
+    }
 
     val bottomSheetState = rememberModalBottomSheetState()
 
     val accountSettings = listOf("Kategori")
     val suggestions = listOf("Arkadaşını davet et", "Değerlendir", "Burayı nasıl buldun?")
     val wellbeesSettings = listOf(
-        "Geri Bildirim", "Wellbees Hakkında", "SSS", "Bildirimler",
-        "Hizmet Kullanım Koşulları", "Gizlilik Politikası", "Şifre Değiştir",
-        "Dil Seçimi", "Uzman Dilini Seç", "Hesap Kapatma"
+        "Geri Bildirim",
+        "Wellbees Hakkında",
+        "SSS",
+        "Bildirimler",
+        "Hizmet Kullanım Koşulları",
+        "Gizlilik Politikası",
+        "Şifre Değiştir",
+        "Dil Seçimi",
+        "Uzman Dilini Seç",
+        "Hesap Kapatma"
     )
 
     Column(
@@ -79,14 +89,14 @@ fun SettingsScreen(
         // Top Bar
         TopAppBar(
             title = {
-                Text("Ayarlar", fontSize = 25.sp, fontWeight = FontWeight.Medium, color = Color.Black)
-            },
-            navigationIcon = {
+                Text(
+                    "Ayarlar", fontSize = 25.sp, fontWeight = FontWeight.Medium, color = Color.Black
+                )
+            }, navigationIcon = {
                 IconButton(onClick = onBackClick) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.Black)
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+            }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
         )
 
         Column(
@@ -102,6 +112,7 @@ fun SettingsScreen(
                 when (item) {
                     "Arkadaşını davet et" -> onInviteFriendClick()
                     "Değerlendir" -> showRateDialog = true
+                    "Burayı nasıl buldun?" -> onHowDidYouFindClick()
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -122,16 +133,16 @@ fun SettingsScreen(
                         LanguageSettingsItem(
                             title = item,
                             selectedLanguage = selectedLanguage.displayName,
-                            onClick = { showLanguageBottomSheet = true }
-                        )
+                            onClick = { showLanguageBottomSheet = true })
                     }
+
                     "Uzman Dilini Seç" -> {
                         LanguageSettingsItem(
                             title = item,
                             selectedLanguage = selectedExpertLanguage.displayName,
-                            onClick = { showExpertLanguageBottomSheet = true }
-                        )
+                            onClick = { showExpertLanguageBottomSheet = true })
                     }
+
                     else -> {
                         SettingsItem(item) {
                             when (item) {
@@ -176,20 +187,20 @@ fun SettingsScreen(
     // Rate Dialog
     if (showRateDialog) {
         AlertDialog(
-            onDismissRequest = { showRateDialog = false },
-            title = {
+            onDismissRequest = { showRateDialog = false }, title = {
                 Text(
                     "Mağazada bizi değerlendirmek ve yorum bırakmak ister misiniz?",
                     fontSize = 16.sp,
                     color = Color.Black
                 )
-            },
-            confirmButton = {
+            }, confirmButton = {
                 TextButton(
                     onClick = {
                         showRateDialog = false
-                        val intent = Intent(Intent.ACTION_VIEW,
-                            "https://play.google.com/store/apps/details?id=com.wellbees.android&hl=en".toUri())
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://play.google.com/store/apps/details?id=com.wellbees.android&hl=en".toUri()
+                        )
                         try {
                             context.startActivity(intent)
                         } catch (_: ActivityNotFoundException) {
@@ -200,26 +211,18 @@ fun SettingsScreen(
                                 )
                             )
                         }
-                    }
-                ) {
+                    }) {
                     Text(
-                        "İZİN VER",
-                        color = Color(0xFFffc42c),
-                        fontWeight = FontWeight.Medium
+                        "İZİN VER", color = Color(0xFFffc42c), fontWeight = FontWeight.Medium
                     )
                 }
-            },
-            dismissButton = {
+            }, dismissButton = {
                 TextButton(onClick = { showRateDialog = false }) {
                     Text(
-                        "REDDET",
-                        color = Color(0xFFffc42c),
-                        fontWeight = FontWeight.Medium
+                        "REDDET", color = Color(0xFFffc42c), fontWeight = FontWeight.Medium
                     )
                 }
-            },
-            shape = RoundedCornerShape(0.dp),
-            containerColor = Color.White
+            }, shape = RoundedCornerShape(0.dp), containerColor = Color.White
         )
     }
 
@@ -238,8 +241,7 @@ fun SettingsScreen(
                 onLanguageSelected = { language ->
                     selectedLanguage = language
                     showLanguageBottomSheet = false
-                }
-            )
+                })
         }
     }
 
@@ -258,25 +260,21 @@ fun SettingsScreen(
                 onLanguageSelected = { language ->
                     selectedExpertLanguage = language
                     showExpertLanguageBottomSheet = false
-                }
-            )
+                })
         }
     }
 }
 
 @Composable
 fun LanguageSettingsItem(
-    title: String,
-    selectedLanguage: String,
-    onClick: () -> Unit = {}
+    title: String, selectedLanguage: String, onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         Icon(
             Icons.Default.Star,
             contentDescription = title,
@@ -285,10 +283,7 @@ fun LanguageSettingsItem(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            title,
-            fontSize = 16.sp,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
+            title, fontSize = 16.sp, color = Color.Black, modifier = Modifier.weight(1f)
         )
         Text(
             selectedLanguage,
@@ -313,9 +308,7 @@ fun LanguageSettingsItem(
 
 @Composable
 fun LanguageSelectionContent(
-    languages: List<Language>,
-    selectedLanguage: Language,
-    onLanguageSelected: (Language) -> Unit
+    languages: List<Language>, selectedLanguage: Language, onLanguageSelected: (Language) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -325,15 +318,13 @@ fun LanguageSelectionContent(
     ) {
         // Language List
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly
+            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly
         ) {
             languages.forEach { language ->
                 LanguageOption(
                     language = language,
                     isSelected = language.code == selectedLanguage.code,
-                    onClick = { onLanguageSelected(language) }
-                )
+                    onClick = { onLanguageSelected(language) })
             }
         }
     }
@@ -341,22 +332,16 @@ fun LanguageSelectionContent(
 
 @Composable
 fun LanguageOption(
-    language: Language,
-    isSelected: Boolean,
-    onClick: () -> Unit
+    language: Language, isSelected: Boolean, onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 12.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         Text(
-            language.name,
-            fontSize = 16.sp,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
+            language.name, fontSize = 16.sp, color = Color.Black, modifier = Modifier.weight(1f)
         )
 
         if (isSelected) {
@@ -372,9 +357,7 @@ fun LanguageOption(
 
 @Composable
 fun SettingsGroup(
-    title: String,
-    items: List<String>,
-    onItemClick: (String) -> Unit = {}
+    title: String, items: List<String>, onItemClick: (String) -> Unit = {}
 ) {
     Text(
         title,
@@ -397,8 +380,7 @@ fun SettingsItem(title: String, onClick: () -> Unit = {}) {
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         Icon(
             Icons.Default.Star,
             contentDescription = title,
@@ -407,10 +389,7 @@ fun SettingsItem(title: String, onClick: () -> Unit = {}) {
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            title,
-            fontSize = 16.sp,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
+            title, fontSize = 16.sp, color = Color.Black, modifier = Modifier.weight(1f)
         )
         Icon(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,

@@ -31,23 +31,16 @@ data class ForTodayItem(
 )
 
 enum class ForTodayType {
-    SLEEP_MOOD,
-    DAILY_MOOD,
-    MEDICAL_TASK
+    SLEEP_MOOD, DAILY_MOOD, MEDICAL_TASK
 }
 
 val moodImages = listOf(
-    R.drawable.mood1,
-    R.drawable.mood2,
-    R.drawable.mood3,
-    R.drawable.mood4,
-    R.drawable.mood5
+    R.drawable.mood1, R.drawable.mood2, R.drawable.mood3, R.drawable.mood4, R.drawable.mood5
 )
 
 @Composable
 fun ForTodaySection(
-    items: List<ForTodayItem>,
-    onItemUpdate: (ForTodayItem) -> Unit
+    items: List<ForTodayItem>, onItemUpdate: (ForTodayItem) -> Unit
 ) {
     Column {
         Text(
@@ -72,24 +65,20 @@ fun ForTodaySection(
         ) {
             items(items, key = { it.id }) { item ->
                 Box(
-                    modifier = Modifier
-                        .fillParentMaxWidth()
+                    modifier = Modifier.fillParentMaxWidth()
                 ) {
-                    UniformForTodayCard(
-                        item = item,
-                        onItemClick = {
-                            when (item.type) {
-                                ForTodayType.SLEEP_MOOD, ForTodayType.DAILY_MOOD -> {
-                                }
-                                ForTodayType.MEDICAL_TASK -> {
-                                    onItemUpdate(item.copy(isCompleted = !item.isCompleted))
-                                }
+                    UniformForTodayCard(item = item, onItemClick = {
+                        when (item.type) {
+                            ForTodayType.SLEEP_MOOD, ForTodayType.DAILY_MOOD -> {
                             }
-                        },
-                        onMoodSelected = { moodIndex ->
-                            onItemUpdate(item.copy(selectedMood = moodIndex, isCompleted = true))
+
+                            ForTodayType.MEDICAL_TASK -> {
+                                onItemUpdate(item.copy(isCompleted = !item.isCompleted))
+                            }
                         }
-                    )
+                    }, onMoodSelected = { moodIndex ->
+                        onItemUpdate(item.copy(selectedMood = moodIndex, isCompleted = true))
+                    })
                 }
             }
         }
@@ -98,9 +87,7 @@ fun ForTodaySection(
 
 @Composable
 fun UniformForTodayCard(
-    item: ForTodayItem,
-    onItemClick: () -> Unit,
-    onMoodSelected: (Int) -> Unit = {}
+    item: ForTodayItem, onItemClick: () -> Unit, onMoodSelected: (Int) -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -113,8 +100,7 @@ fun UniformForTodayCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
+                .padding(16.dp), contentAlignment = Alignment.Center
         ) {
             // Content section
             when (item.type) {
@@ -125,8 +111,7 @@ fun UniformForTodayCard(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         MoodSelectionRow(
-                            selectedMood = item.selectedMood,
-                            onMoodSelected = onMoodSelected
+                            selectedMood = item.selectedMood, onMoodSelected = onMoodSelected
                         )
 
                         Text(
@@ -139,14 +124,14 @@ fun UniformForTodayCard(
                         )
                     }
                 }
+
                 ForTodayType.MEDICAL_TASK -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         MedicalTaskRow(
-                            isCompleted = item.isCompleted,
-                            onTaskClick = onItemClick
+                            isCompleted = item.isCompleted, onTaskClick = onItemClick
                         )
 
                         Text(
@@ -166,8 +151,7 @@ fun UniformForTodayCard(
 
 @Composable
 fun MoodSelectionRow(
-    selectedMood: Int,
-    onMoodSelected: (Int) -> Unit
+    selectedMood: Int, onMoodSelected: (Int) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -199,8 +183,7 @@ fun MoodSelectionRow(
 
 @Composable
 fun MedicalTaskRow(
-    isCompleted: Boolean,
-    onTaskClick: () -> Unit
+    isCompleted: Boolean, onTaskClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -227,26 +210,18 @@ fun MedicalTaskRow(
                         Brush.radialGradient(
                             colors = listOf(Color(0xFFffc42c), Color(0xFFffb000))
                         )
-                    },
-                    shape = CircleShape
+                    }, shape = CircleShape
                 )
                 .clip(CircleShape)
-                .clickable { onTaskClick() },
-            contentAlignment = Alignment.Center
+                .clickable { onTaskClick() }, contentAlignment = Alignment.Center
         ) {
             if (isCompleted) {
                 Text(
-                    text = "✓",
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
+                    text = "✓", fontSize = 20.sp, color = Color.White, textAlign = TextAlign.Center
                 )
             } else {
                 Text(
-                    text = "◦",
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
+                    text = "◦", fontSize = 16.sp, color = Color.White, textAlign = TextAlign.Center
                 )
             }
         }

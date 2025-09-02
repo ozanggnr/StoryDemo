@@ -12,8 +12,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 
 @Composable
 internal fun StoryContentView(
-    currentStory: StoryContent,
-    player: ExoPlayer?
+    currentStory: StoryContent, player: ExoPlayer?
 ) {
     when (currentStory) {
         is StoryContent.Image -> {
@@ -24,6 +23,7 @@ internal fun StoryContentView(
                 modifier = Modifier.fillMaxSize()
             )
         }
+
         is StoryContent.Video -> {
             player?.let { exoPlayer ->
                 AndroidView(
@@ -33,8 +33,7 @@ internal fun StoryContentView(
                             useController = false
                             keepScreenOn = true
                         }
-                    },
-                    modifier = Modifier.fillMaxSize()
+                    }, modifier = Modifier.fillMaxSize()
                 )
             }
         }

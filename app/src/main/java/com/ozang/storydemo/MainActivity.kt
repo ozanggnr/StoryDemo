@@ -42,72 +42,78 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createStoryGroups() = listOf(
-        StoryGroup("1", "Alice", R.drawable.photo1, listOf(
-            StoryContent.Image(R.drawable.photo1),
-            StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
-        )),
-        StoryGroup("2", "Bob", R.drawable.photo2, listOf(
-            StoryContent.Image(R.drawable.photo3),
-            StoryContent.Video("https:  commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
-        )),
-        StoryGroup("3", "Ozan", R.drawable.ic_launcher_foreground, listOf(
-            StoryContent.Image(R.drawable.photo1),
-            StoryContent.Image(R.drawable.photo4)
-        )),
-        StoryGroup("4", "Kenan", R.drawable.ic_launcher_foreground, listOf(
-            StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"),
-            StoryContent.Image(R.drawable.photo3)
-        )),
-        StoryGroup("5", "Beth", R.drawable.ic_launcher_foreground, listOf(
-            StoryContent.Image(R.drawable.photo1),
-            StoryContent.Image(R.drawable.photo2)
-        )),
-        StoryGroup("6", "Jack", R.drawable.ic_launcher_foreground, listOf(
-            StoryContent.Image(R.drawable.photo4),
-            StoryContent.Image(R.drawable.photo2)
-        )),
-        StoryGroup("7", "Aziz", R.drawable.ic_launcher_foreground, listOf(
-            StoryContent.Image(R.drawable.photo3),
-            StoryContent.Image(R.drawable.photo4)
-        ))
+        StoryGroup(
+            "1", "Alice", R.drawable.photo1, listOf(
+                StoryContent.Image(R.drawable.photo1),
+                StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+            )
+        ), StoryGroup(
+            "2", "Bob", R.drawable.photo2, listOf(
+                StoryContent.Image(R.drawable.photo3),
+                StoryContent.Video("https:  commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
+            )
+        ), StoryGroup(
+            "3", "Ozan", R.drawable.ic_launcher_foreground, listOf(
+                StoryContent.Image(R.drawable.photo1), StoryContent.Image(R.drawable.photo4)
+            )
+        ), StoryGroup(
+            "4", "Kenan", R.drawable.ic_launcher_foreground, listOf(
+                StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"),
+                StoryContent.Image(R.drawable.photo3)
+            )
+        ), StoryGroup(
+            "5", "Beth", R.drawable.ic_launcher_foreground, listOf(
+                StoryContent.Image(R.drawable.photo1), StoryContent.Image(R.drawable.photo2)
+            )
+        ), StoryGroup(
+            "6", "Jack", R.drawable.ic_launcher_foreground, listOf(
+                StoryContent.Image(R.drawable.photo4), StoryContent.Image(R.drawable.photo2)
+            )
+        ), StoryGroup(
+            "7", "Aziz", R.drawable.ic_launcher_foreground, listOf(
+                StoryContent.Image(R.drawable.photo3), StoryContent.Image(R.drawable.photo4)
+            )
+        )
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(userName: String, onMenuClick: () -> Unit) {
-    TopAppBar(
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(R.drawable.wellbees),
-                    contentDescription = "App Icon",
-                    modifier = Modifier.size(50.dp).clip(CircleShape)
+    TopAppBar(title = {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(R.drawable.wellbees),
+                contentDescription = "App Icon",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.width(15.dp))
+            Column {
+                Text("Hello,", fontSize = 16.sp, color = Color.Black)
+                Text(
+                    userName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black
                 )
-                Spacer(modifier = Modifier.width(15.dp))
-                Column {
-                    Text("Hello,", fontSize = 16.sp, color = Color.Black)
-                    Text(userName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Default.Menu, "Menu", tint = Color.Black, modifier = Modifier.size(30.dp))
-            }
-        },
-        actions = {
-            IconButton(onClick = { /* search */ }) {
-                Icon(Icons.Default.Search, "Search")
-            }
-            IconButton(onClick = { /* notifications */ }) {
-                Icon(Icons.Default.Notifications, "Notifications", Modifier.size(30.dp))
-            }
-            IconButton(onClick = { /* profile */ }) {
-                Icon(Icons.Default.AccountCircle, "Profile", Modifier.size(30.dp))
             }
         }
-    )
+    }, navigationIcon = {
+        IconButton(onClick = onMenuClick) {
+            Icon(
+                Icons.Default.Menu, "Menu", tint = Color.Black, modifier = Modifier.size(30.dp)
+            )
+        }
+    }, actions = {
+        IconButton(onClick = { /* search */ }) {
+            Icon(Icons.Default.Search, "Search")
+        }
+        IconButton(onClick = { /* notifications */ }) {
+            Icon(Icons.Default.Notifications, "Notifications", Modifier.size(30.dp))
+        }
+        IconButton(onClick = { /* profile */ }) {
+            Icon(Icons.Default.AccountCircle, "Profile", Modifier.size(30.dp))
+        }
+    })
 }
 
 @Composable
@@ -118,6 +124,7 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     var showAbout by remember { mutableStateOf(false) }
     var showTerms by remember { mutableStateOf(false) }
     var showInviteFriend by remember { mutableStateOf(false) }
+    var showHowDidYouFind by remember { mutableStateOf(false) }
 
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -136,31 +143,34 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     when {
         showAbout -> {
             AboutScreen(
-                onBackClick = { showAbout = false }
-            )
+                onBackClick = { showAbout = false })
         }
+
         showTerms -> {
             TermsOfServiceScreen(
-                onBackClick = { showTerms = false }
-            )
+                onBackClick = { showTerms = false })
         }
+
         showInviteFriend -> {
             InviteFriendScreen(
-                onBackClick = { showInviteFriend = false }
-            )
+                onBackClick = { showInviteFriend = false })
         }
+
+        showHowDidYouFind -> { // ADD THIS BLOCK
+            HowDidYouFindScreen(
+                onBackClick = { showHowDidYouFind = false })
+        }
+
         showSettings -> {
-            SettingsScreen(
-                onBackClick = { showSettings = false },
-                onAboutClick = {
-                    showAbout = true
-                },
-                onTermsClick = {
-                    showTerms= true
-                },
-                onInviteFriendClick = { showInviteFriend = true }
-            )
+            SettingsScreen(onBackClick = { showSettings = false }, onAboutClick = {
+                showAbout = true
+            }, onTermsClick = {
+                showTerms = true
+            }, onInviteFriendClick = {
+                showInviteFriend = true
+            }, onHowDidYouFindClick = { showHowDidYouFind = true })
         }
+
         else -> {
             MainContent(
                 storyGroups = storyGroups,
@@ -179,8 +189,7 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                     forTodayItems = forTodayItems.map { item ->
                         if (item.id == updatedItem.id) updatedItem else item
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -199,20 +208,15 @@ fun MainContent(
     onForTodayUpdate: (ForTodayItem) -> Unit
 ) {
     ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
+        drawerState = drawerState, drawerContent = {
             HamburgerMenu(
-                userName = "Ozan",
-                userSurname = "Gungor",
-                onSettingsClick = {
+                userName = "Ozan", userSurname = "Gungor", onSettingsClick = {
                     scope.launch {
                         drawerState.close()
                         onSettingsClick()
                     }
-                }
-            )
-        }
-    ) {
+                })
+        }) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -243,8 +247,7 @@ fun MainContent(
 
 @Composable
 fun StoriesRow(
-    storyGroups: List<StoryGroup>,
-    onStorySelect: (StoryGroup, Int) -> Unit
+    storyGroups: List<StoryGroup>, onStorySelect: (StoryGroup, Int) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
@@ -263,8 +266,7 @@ fun StoriesRow(
 fun StoryPreview(storyGroup: StoryGroup, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
-    ) {
+        modifier = Modifier.clickable { onClick() }) {
         Box(
             modifier = Modifier
                 .size(85.dp)

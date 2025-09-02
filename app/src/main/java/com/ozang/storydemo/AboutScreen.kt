@@ -29,20 +29,18 @@ fun AboutScreen(onBackClick: () -> Unit) {
         // Top Bar
         CenterAlignedTopAppBar(
             title = {
-                Text(
-                    stringResource(R.string.about_title),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.Black)
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+            Text(
+                stringResource(R.string.about_title),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
+        }, navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.Black)
+            }
+        }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
         )
 
         // Privacy Policy Content
@@ -419,10 +417,7 @@ fun DataProcessingTable() {
 
 @Composable
 fun TableRow(
-    purpose: String,
-    type: String,
-    lawful: String,
-    isLast: Boolean = false
+    purpose: String, type: String, lawful: String, isLast: Boolean = false
 ) {
     Row(
         modifier = Modifier
@@ -454,8 +449,7 @@ fun TableRow(
 
     if (!isLast) {
         HorizontalDivider(
-            color = Color.LightGray.copy(alpha = 0.3f),
-            thickness = 0.5.dp
+            color = Color.LightGray.copy(alpha = 0.3f), thickness = 0.5.dp
         )
     }
 }

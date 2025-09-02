@@ -35,8 +35,7 @@ internal fun StoryOverlay(
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.Black.copy(alpha = 0.6f), Color.Transparent),
-                    endY = 200f
+                    colors = listOf(Color.Black.copy(alpha = 0.6f), Color.Transparent), endY = 200f
                 )
             )
             .padding(16.dp)
@@ -44,8 +43,7 @@ internal fun StoryOverlay(
         Spacer(modifier = Modifier.height(36.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             currentStoryGroup.stories.forEachIndexed { index, _ ->
                 StoryProgressBar(
@@ -61,8 +59,7 @@ internal fun StoryOverlay(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
             Image(
                 painter = painterResource(id = currentStoryGroup.profileImage),
@@ -107,7 +104,8 @@ private fun StoryProgressBar(
         when {
             isCompleted -> progress.snapTo(1f)
             !isActive -> progress.snapTo(0f)
-            isActive -> { /* keep current value */ }
+            isActive -> { /* keep current value */
+            }
         }
     }
 
@@ -119,14 +117,13 @@ private fun StoryProgressBar(
         if (remaining == 0f) return@LaunchedEffect
         try {
             progress.animateTo(
-                1f,
-                animationSpec = tween(
-                    durationMillis = (storyDurationMs * remaining).toInt(),
-                    easing = LinearEasing
+                1f, animationSpec = tween(
+                    durationMillis = (storyDurationMs * remaining).toInt(), easing = LinearEasing
                 )
             )
             onComplete()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     LinearProgressIndicator(
