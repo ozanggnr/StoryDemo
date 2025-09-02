@@ -117,6 +117,8 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     var showSettings by remember { mutableStateOf(false) }
     var showAbout by remember { mutableStateOf(false) }
     var showTerms by remember { mutableStateOf(false) }
+    var showInviteFriend by remember { mutableStateOf(false) }
+
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -142,6 +144,11 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                 onBackClick = { showTerms = false }
             )
         }
+        showInviteFriend -> {
+            InviteFriendScreen(
+                onBackClick = { showInviteFriend = false }
+            )
+        }
         showSettings -> {
             SettingsScreen(
                 onBackClick = { showSettings = false },
@@ -150,7 +157,8 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                 },
                 onTermsClick = {
                     showTerms= true
-                }
+                },
+                onInviteFriendClick = { showInviteFriend = true }
             )
         }
         else -> {

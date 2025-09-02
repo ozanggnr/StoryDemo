@@ -35,7 +35,8 @@ data class Language(
 fun SettingsScreen(
     onBackClick: () -> Unit,
     onAboutClick: () -> Unit = {},
-    onTermsClick: () -> Unit = {}
+    onTermsClick: () -> Unit = {},
+    onInviteFriendClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var showRateDialog by remember { mutableStateOf(false) }
@@ -98,8 +99,9 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             SettingsGroup("ÖNERİLER", suggestions) { item ->
-                if (item == "Değerlendir") {
-                    showRateDialog = true
+                when (item) {
+                    "Arkadaşını davet et" -> onInviteFriendClick()
+                    "Değerlendir" -> showRateDialog = true
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
