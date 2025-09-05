@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
         ), StoryGroup(
             "2", "Bob", R.drawable.photo2, listOf(
                 StoryContent.Image(R.drawable.photo3),
-                StoryContent.Video("https:  commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
+                StoryContent.Video("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")
             )
         ), StoryGroup(
             "3", "Ozan", R.drawable.ic_launcher_foreground, listOf(
@@ -126,7 +126,6 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
     var showInviteFriend by remember { mutableStateOf(false) }
     var showHowDidYouFind by remember { mutableStateOf(false) }
 
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -156,19 +155,19 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                 onBackClick = { showInviteFriend = false })
         }
 
-        showHowDidYouFind -> { // ADD THIS BLOCK
+        showHowDidYouFind -> {
             HowDidYouFindScreen(
                 onBackClick = { showHowDidYouFind = false })
         }
 
         showSettings -> {
-            SettingsScreen(onBackClick = { showSettings = false }, onAboutClick = {
-                showAbout = true
-            }, onTermsClick = {
-                showTerms = true
-            }, onInviteFriendClick = {
-                showInviteFriend = true
-            }, onHowDidYouFindClick = { showHowDidYouFind = true })
+            SettingsScreen(
+                onBackClick = { showSettings = false },
+                onAboutClick = { showAbout = true },
+                onTermsClick = { showTerms = true },
+                onInviteFriendClick = { showInviteFriend = true },
+                onHowDidYouFindClick = { showHowDidYouFind = true }
+            )
         }
 
         else -> {
@@ -189,7 +188,8 @@ fun StoriesApp(storyGroups: List<StoryGroup>) {
                     forTodayItems = forTodayItems.map { item ->
                         if (item.id == updatedItem.id) updatedItem else item
                     }
-                })
+                }
+            )
         }
     }
 }
@@ -207,16 +207,23 @@ fun MainContent(
     onSettingsClick: () -> Unit,
     onForTodayUpdate: (ForTodayItem) -> Unit
 ) {
+    var showAllServices by remember { mutableStateOf(false) }
+
     ModalNavigationDrawer(
-        drawerState = drawerState, drawerContent = {
+        drawerState = drawerState,
+        drawerContent = {
             HamburgerMenu(
-                userName = "Ozan", userSurname = "Gungor", onSettingsClick = {
+                userName = "Ozan",
+                userSurname = "Gungor",
+                onSettingsClick = {
                     scope.launch {
                         drawerState.close()
                         onSettingsClick()
                     }
-                })
-        }) {
+                }
+            )
+        }
+    ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -232,6 +239,18 @@ fun MainContent(
 
                 ForTodaySection(forTodayItems, onForTodayUpdate)
                 Spacer(modifier = Modifier.height(24.dp))
+
+                // Services Section
+                ServicesSection(
+                    onServiceClick = { service ->
+                        // Handle service click - you can add your backend functions here
+                        // For now, this is empty as requested
+                    },
+                    onViewAllClick = {
+                        showAllServices = true
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
             selectedStoryGroup?.let {
@@ -241,13 +260,24 @@ fun MainContent(
                     onClose = onStoryClose
                 )
             }
+
+            // All Services Bottom Sheet
+            AllServicesBottomSheet(
+                showBottomSheet = showAllServices,
+                onDismiss = { showAllServices = false },
+                onServiceClick = { service ->
+                    // Handle service click from bottom sheet
+                    // You can add your backend functions here
+                }
+            )
         }
     }
 }
 
 @Composable
 fun StoriesRow(
-    storyGroups: List<StoryGroup>, onStorySelect: (StoryGroup, Int) -> Unit
+    storyGroups: List<StoryGroup>,
+    onStorySelect: (StoryGroup, Int) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
@@ -266,7 +296,8 @@ fun StoriesRow(
 fun StoryPreview(storyGroup: StoryGroup, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }) {
+        modifier = Modifier.clickable { onClick() }
+    ) {
         Box(
             modifier = Modifier
                 .size(85.dp)

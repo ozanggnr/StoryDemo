@@ -172,7 +172,7 @@ fun MoodSelectionRow(
                     painter = painterResource(id = moodRes),
                     contentDescription = "Mood $index",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(70.dp)
                         .graphicsLayer(alpha = alpha),
                     contentScale = ContentScale.Fit
                 )
