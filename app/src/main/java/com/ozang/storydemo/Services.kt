@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 data class ServiceItem(
     val id: String,
     val title: String,
@@ -79,17 +80,34 @@ fun ServicesSection(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Single horizontally scrollable row with all services
+        // Services in 2 rows
+        val chunkedServices = allServices.chunked(2)
+
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 25.dp)
         ) {
-            items(allServices) { service ->
-                ServiceCard(
-                    service = service,
-                    onClick = { onServiceClick(service) }
-                )
+            items(chunkedServices) { servicePair ->
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Top row service
+                    ServiceCard(
+                        service = servicePair[0],
+                        onClick = { onServiceClick(servicePair[0]) }
+                    )
+
+                    // Bottom row service
+                    if (servicePair.size > 1) {
+                        ServiceCard(
+                            service = servicePair[1],
+                            onClick = { onServiceClick(servicePair[1]) }
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.height(80.dp))
+                    }
+                }
             }
         }
     }
@@ -102,7 +120,7 @@ fun ServiceCard(
 ) {
     Card(
         modifier = Modifier
-            .width(150.dp)
+            .width(180.dp)
             .height(100.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
@@ -111,17 +129,17 @@ fun ServiceCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            // Icon on top
+            // Icon
             Box(
                 modifier = Modifier
-                    .size(40.dp) // Icon container
+                    .size(40.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFFF5F5F5)),
                 contentAlignment = Alignment.Center
@@ -129,20 +147,23 @@ fun ServiceCard(
                 Image(
                     painter = painterResource(service.iconRes),
                     contentDescription = service.title,
-                    modifier = Modifier.size(24.dp), // Icon size
+                    modifier = Modifier.size(24.dp),
                     contentScale = ContentScale.Fit
                 )
             }
 
-            // Service name below icon
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Service name
             Text(
                 text = service.title,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 color = Color.Black,
                 fontWeight = FontWeight.Medium,
                 maxLines = 2,
-                lineHeight = 14.sp,
-                textAlign = TextAlign.Center
+                lineHeight = 16.sp,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -174,12 +195,10 @@ fun AllServicesBottomSheet(
                     color = Color.Black,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-
-                // Services in a vertical scrollable list with left-aligned layout. Will be 2 row
                 Column(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    allServices.chunked(3).forEach { rowServices -> // 3 items per row bo
+                    allServices.chunked(3).forEach { rowServices -> // 3 items per row
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -193,6 +212,9 @@ fun AllServicesBottomSheet(
                                     },
                                     modifier = Modifier.weight(1f)
                                 )
+                            }
+                            repeat(3 - rowServices.size) {
+                                Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
@@ -225,7 +247,7 @@ fun AllServicesCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Icon on top
+            // Icon
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -241,7 +263,7 @@ fun AllServicesCard(
                 )
             }
 
-            // Service name below icon
+            // Service name
             Text(
                 text = service.title,
                 fontSize = 12.sp,

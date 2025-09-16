@@ -6,9 +6,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,8 @@ internal fun StoryOverlay(
         Spacer(modifier = Modifier.height(36.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             currentStoryGroup.stories.forEachIndexed { index, _ ->
                 StoryProgressBar(
@@ -82,8 +84,14 @@ internal fun StoryOverlay(
 
             Spacer(modifier = Modifier.weight(1f))
 
+
             IconButton(onClick = onClose) {
-                Text(text = "✕", color = Color.White, fontSize = 18.sp)
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
@@ -128,8 +136,10 @@ private fun StoryProgressBar(
 
     LinearProgressIndicator(
         progress = { progress.value },
-        modifier = modifier.height(3.dp),
+        modifier = modifier
+            .height(3.dp)
+            .clip(RoundedCornerShape(1.5.dp)),
         trackColor = Color.White.copy(alpha = 0.3f),
         color = Color.White
     )
-} 
+}
